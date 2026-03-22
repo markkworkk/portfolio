@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus AI — Think Faster</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #fafafa;
+    --black: #0a0a0a;
+    --gray-1: #6b7280;
+    --gray-2: #e5e7eb;
+    --gray-3: #f3f4f6;
+    --accent: #6366f1;
+    --accent-light: #eef2ff;
+    --green: #10b981;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Geist', sans-serif;
+    background: var(--bg);
+    color: var(--black);
+    overflow-x: hidden;
+  }
+
+  nav {
+    position: fixed;
+    top: 16px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    width: calc(100% - 48px);
+    max-width: 1100px;
+    padding: 0 20px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  }
+
+  .nav-logo {
+    font-family: 'Instrument Serif', serif;
+    font-size: 20px;
+    color: var(--black);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-dot {
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: blink 2s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--gray-1);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--black); }
+
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--black);
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'Geist', sans-serif;
+  }
+
+  .btn-dark {
+    background: var(--black);
+    color: white;
+    border: none;
+    padding: 9px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    font-family: 'Geist', sans-serif;
+  }
+
+  .btn-dark:hover { opacity: 0.8; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 24px 80px;
+    position: relative;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 20%, rgba(99,102,241,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(16,185,129,0.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent-light);
+    color: var(--accent);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 32px;
+    border: 1px solid rgba(99,102,241,0.2);
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.1s;
+  }
+
+  .badge-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+
+  .hero-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(48px, 8vw, 88px);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.3s;
+    max-width: 800px;
+  }
+
+  .hero-title .highlight { color: var(--accent); font-style: italic; }
+
+  .hero-desc {
+    font-size: clamp(16px, 2vw, 20px);
+    color: var(--gray-1);
+    max-width: 520px;
+    line-height: 1.65;
+    font-weight: 300;
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.5s;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.7s;
+  }
+
+  .btn-primary-light {
+    background: var(--black);
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Geist', sans-serif;
+  }
+
+  .btn-primary-light:hover {
+    background: #1f1f1f;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--black);
+    border: 1.5px solid var(--gray-2);
+    padding: 14px 32px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Geist', sans-serif;
+  }
+
+  .btn-outline:hover { border-color: #9ca3af; background: var(--gray-3); }
+
+  .hero-social-proof {
+    margin-top: 48px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.9s;
+  }
+
+  .avatars { display: flex; }
+
+  .avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 2px solid white;
+    margin-left: -8px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+  }
+
+  .avatar:first-child { margin-left: 0; }
+  .av1 { background: #fbbf24; color: #92400e; }
+  .av2 { background: #60a5fa; color: #1e40af; }
+  .av3 { background: #34d399; color: #065f46; }
+  .av4 { background: #f87171; color: #991b1b; }
+  .av5 { background: #a78bfa; color: #4c1d95; }
+
+  .proof-text { font-size: 14px; color: var(--gray-1); }
+  .proof-text strong { color: var(--black); font-weight: 600; }
+
+  /* DEMO */
+  .demo-section {
+    padding: 0 24px 120px;
+    max-width: 900px;
+    margin: 0 auto;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 1.1s;
+  }
+
+  .demo-card {
+    background: white;
+    border: 1px solid var(--gray-2);
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: 0 8px 48px rgba(0,0,0,0.08);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .demo-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--green));
+  }
+
+  .demo-topbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .demo-dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dd-red { background: #ff5f57; }
+  .dd-yellow { background: #febc2e; }
+  .dd-green { background: #28c840; }
+  .demo-title { font-size: 13px; color: var(--gray-1); margin-left: 8px; }
+
+  .demo-chat { display: flex; flex-direction: column; gap: 16px; }
+
+  .msg { display: flex; gap: 12px; align-items: flex-start; }
+
+  .msg-avatar {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .msg-user .msg-avatar { background: var(--gray-3); color: var(--black); }
+  .msg-ai .msg-avatar { background: var(--accent); color: white; font-size: 12px; }
+
+  .msg-bubble {
+    background: var(--gray-3);
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--black);
+    max-width: 80%;
+  }
+
+  .msg-ai .msg-bubble {
+    background: var(--accent-light);
+    border: 1px solid rgba(99,102,241,0.15);
+  }
+
+  .typing { display: flex; gap: 4px; padding: 14px 16px; }
+
+  .typing span {
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: typing 1.2s ease-in-out infinite;
+  }
+
+  .typing span:nth-child(2) { animation-delay: 0.2s; }
+  .typing span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes typing {
+    0%, 100% { transform: translateY(0); opacity: 0.4; }
+    50% { transform: translateY(-4px); opacity: 1; }
+  }
+
+  /* LOGOS */
+  .logos-section {
+    padding: 48px 24px;
+    text-align: center;
+    border-top: 1px solid var(--gray-2);
+    border-bottom: 1px solid var(--gray-2);
+  }
+
+  .logos-label {
+    font-size: 13px;
+    color: var(--gray-1);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    font-weight: 500;
+  }
+
+  .logos-row {
+    display: flex;
+    gap: 48px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .logo-item {
+    font-family: 'Instrument Serif', serif;
+    font-size: 20px;
+    color: #9ca3af;
+    transition: color 0.2s;
+  }
+
+  .logo-item:hover { color: var(--black); }
+
+  /* FEATURES */
+  .features {
+    padding: 120px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .features-header { text-align: center; margin-bottom: 80px; }
+
+  .tag-pill {
+    display: inline-block;
+    background: var(--gray-3);
+    color: var(--gray-1);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 20px;
+  }
+
+  .features-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 400;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .features-title em { font-style: italic; color: var(--accent); }
+  .features-sub { font-size: 18px; color: var(--gray-1); font-weight: 300; }
+
+  .features-bento {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .bento-card {
+    background: white;
+    border: 1px solid var(--gray-2);
+    border-radius: 20px;
+    padding: 32px;
+    transition: box-shadow 0.3s, transform 0.3s;
+  }
+
+  .bento-card:hover {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+  }
+
+  .bento-card.wide { grid-column: span 2; }
+
+  .bento-icon {
+    width: 44px; height: 44px;
+    background: var(--accent-light);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .bento-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: -0.5px;
+    margin-bottom: 10px;
+  }
+
+  .bento-desc { font-size: 14px; color: var(--gray-1); line-height: 1.65; font-weight: 300; }
+
+  .bento-stat {
+    margin-top: 24px;
+    font-family: 'Instrument Serif', serif;
+    font-size: 48px;
+    font-weight: 400;
+    letter-spacing: -2px;
+    color: var(--accent);
+  }
+
+  /* PRICING */
+  .pricing {
+    padding: 120px 24px;
+    background: var(--black);
+    color: white;
+  }
+
+  .pricing-header { text-align: center; margin-bottom: 64px; }
+
+  .pricing-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 400;
+    letter-spacing: -1.5px;
+    margin-bottom: 16px;
+  }
+
+  .pricing-sub { font-size: 18px; color: rgba(255,255,255,0.5); font-weight: 300; }
+
+  .pricing-cards {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    max-width: 900px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+  }
+
+  .p-card {
+    background: #111;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 40px 36px;
+    flex: 1;
+    min-width: 260px;
+    max-width: 300px;
+    transition: border-color 0.3s;
+  }
+
+  .p-card:hover { border-color: rgba(255,255,255,0.2); }
+  .p-card.best { background: var(--accent); border-color: var(--accent); }
+
+  .p-plan {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 12px;
+  }
+
+  .p-card.best .p-plan { color: rgba(255,255,255,0.7); }
+
+  .p-price {
+    font-family: 'Instrument Serif', serif;
+    font-size: 52px;
+    font-weight: 400;
+    letter-spacing: -2px;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .p-period { font-size: 14px; color: rgba(255,255,255,0.4); margin-bottom: 32px; }
+
+  .p-features { list-style: none; margin-bottom: 36px; }
+
+  .p-features li {
+    font-size: 14px;
+    color: rgba(255,255,255,0.7);
+    padding: 9px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 300;
+  }
+
+  .p-card.best .p-features li {
+    color: rgba(255,255,255,0.9);
+    border-bottom-color: rgba(255,255,255,0.15);
+  }
+
+  .p-features li::before { content: '→'; font-size: 12px; opacity: 0.6; }
+
+  .p-btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    font-family: 'Geist', sans-serif;
+    transition: all 0.2s;
+  }
+
+  .p-btn-outline {
+    background: transparent;
+    color: white;
+    border: 1.5px solid rgba(255,255,255,0.2) !important;
+  }
+
+  .p-btn-outline:hover { background: rgba(255,255,255,0.06); }
+
+  .p-btn-white { background: white; color: var(--accent); font-weight: 600; }
+  .p-btn-white:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  /* CTA */
+  .cta-section {
+    padding: 120px 24px;
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .cta-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(40px, 6vw, 64px);
+    font-weight: 400;
+    letter-spacing: -2px;
+    line-height: 1.1;
+    margin-bottom: 24px;
+  }
+
+  .cta-title em { font-style: italic; color: var(--accent); }
+  .cta-desc { font-size: 18px; color: var(--gray-1); font-weight: 300; margin-bottom: 40px; line-height: 1.6; }
+
+  .input-row { display: flex; gap: 8px; max-width: 440px; margin: 0 auto; }
+
+  .email-input {
+    flex: 1;
+    padding: 14px 18px;
+    border: 1.5px solid var(--gray-2);
+    border-radius: 12px;
+    font-size: 15px;
+    font-family: 'Geist', sans-serif;
+    outline: none;
+    background: white;
+    transition: border-color 0.2s;
+  }
+
+  .email-input:focus { border-color: var(--accent); }
+
+  footer {
+    padding: 40px 24px;
+    border-top: 1px solid var(--gray-2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .footer-logo {
+    font-family: 'Instrument Serif', serif;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .footer-copy { font-size: 13px; color: var(--gray-1); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-up {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .features-bento { grid-template-columns: 1fr; }
+    .bento-card.wide { grid-column: span 1; }
+    .input-row { flex-direction: column; }
+    footer { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <div class="nav-dot"></div>
+    Nexus
+  </div>
+  <ul class="nav-links">
+    <li><a href="#features">Product</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#">Docs</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="btn-ghost">Sign in</button>
+    <button class="btn-dark">Get started free</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge">
+    <div class="badge-dot"></div>
+    Now in public beta — join 12,000+ teams
+  </div>
+  <h1 class="hero-title">
+    Your team's<br><span class="highlight">second brain,</span><br>supercharged.
+  </h1>
+  <p class="hero-desc">Nexus connects to your tools, learns from your data, and answers questions before you finish asking them.</p>
+  <div class="hero-actions">
+    <button class="btn-primary-light">Start for free →</button>
+    <button class="btn-outline">Watch demo</button>
+  </div>
+  <div class="hero-social-proof">
+    <div class="avatars">
+      <div class="avatar av1">A</div>
+      <div class="avatar av2">B</div>
+      <div class="avatar av3">C</div>
+      <div class="avatar av4">D</div>
+      <div class="avatar av5">E</div>
+    </div>
+    <div class="proof-text"><strong>12,847 teams</strong> already thinking faster</div>
+  </div>
+</section>
+
+<div class="demo-section">
+  <div class="demo-card">
+    <div class="demo-topbar">
+      <div class="demo-dot dd-red"></div>
+      <div class="demo-dot dd-yellow"></div>
+      <div class="demo-dot dd-green"></div>
+      <span class="demo-title">Nexus — Workspace AI</span>
+    </div>
+    <div class="demo-chat">
+      <div class="msg msg-user">
+        <div class="msg-avatar">You</div>
+        <div class="msg-bubble">What were the key decisions from last week's product meeting?</div>
+      </div>
+      <div class="msg msg-ai">
+        <div class="msg-avatar">AI</div>
+        <div class="msg-bubble">Based on the meeting notes from Tuesday, here are the 3 key decisions: <strong>1)</strong> Launch v2.0 on March 28th <strong>2)</strong> Drop the mobile-first approach for Q2 <strong>3)</strong> Alex owns the onboarding redesign. Want me to create action items?</div>
+      </div>
+      <div class="msg msg-user">
+        <div class="msg-avatar">You</div>
+        <div class="msg-bubble">Yes, and add them to our Notion board</div>
+      </div>
+      <div class="msg msg-ai">
+        <div class="msg-avatar">AI</div>
+        <div class="msg-bubble typing">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="logos-section fade-up">
+  <div class="logos-label">Trusted by teams at</div>
+  <div class="logos-row">
+    <div class="logo-item">Stripe</div>
+    <div class="logo-item">Linear</div>
+    <div class="logo-item">Notion</div>
+    <div class="logo-item">Vercel</div>
+    <div class="logo-item">Figma</div>
+    <div class="logo-item">Loom</div>
+  </div>
+</div>
+
+<section class="features fade-up" id="features">
+  <div class="features-header">
+    <div class="tag-pill">Everything you need</div>
+    <h2 class="features-title">Built for teams who move <em>fast.</em></h2>
+    <p class="features-sub">One AI that knows your entire workspace.</p>
+  </div>
+  <div class="features-bento">
+    <div class="bento-card wide fade-up">
+      <div class="bento-icon">🔗</div>
+      <h3 class="bento-title">Connect everything</h3>
+      <p class="bento-desc">Slack, Notion, Linear, GitHub, Google Docs — Nexus reads it all and creates a unified knowledge base your whole team can query in plain English.</p>
+      <div class="bento-stat">40+</div>
+      <p style="font-size:13px; color:var(--gray-1); margin-top:4px;">integrations available</p>
+    </div>
+    <div class="bento-card fade-up">
+      <div class="bento-icon">⚡</div>
+      <h3 class="bento-title">Instant answers</h3>
+      <p class="bento-desc">No more digging through threads. Ask anything, get answers with sources cited.</p>
+    </div>
+    <div class="bento-card fade-up">
+      <div class="bento-icon">🔒</div>
+      <h3 class="bento-title">Enterprise security</h3>
+      <p class="bento-desc">SOC 2 Type II certified. Your data never trains our models. Zero retention policy.</p>
+    </div>
+    <div class="bento-card fade-up">
+      <div class="bento-icon">🤖</div>
+      <h3 class="bento-title">Autonomous agents</h3>
+      <p class="bento-desc">Not just answers — actions. Nexus can create tasks, draft docs, and update your tools automatically.</p>
+    </div>
+    <div class="bento-card wide fade-up">
+      <div class="bento-icon">📊</div>
+      <h3 class="bento-title">Team analytics</h3>
+      <p class="bento-desc">Understand what your team asks most, where knowledge gaps exist, and how AI usage drives productivity — with a beautiful dashboard.</p>
+    </div>
+  </div>
+</section>
+
+<section class="pricing fade-up" id="pricing">
+  <div class="pricing-header">
+    <h2 class="pricing-title">Simple pricing.</h2>
+    <p class="pricing-sub">Start free. Scale when you're ready.</p>
+  </div>
+  <div class="pricing-cards">
+    <div class="p-card fade-up">
+      <div class="p-plan">Starter</div>
+      <div class="p-price">$0</div>
+      <div class="p-period">Free forever</div>
+      <ul class="p-features">
+        <li>Up to 3 users</li>
+        <li>5 integrations</li>
+        <li>1,000 queries/month</li>
+        <li>7-day history</li>
+      </ul>
+      <button class="p-btn p-btn-outline">Get started</button>
+    </div>
+    <div class="p-card best fade-up">
+      <div class="p-plan">Pro</div>
+      <div class="p-price">$29</div>
+      <div class="p-period">per user / month</div>
+      <ul class="p-features">
+        <li>Unlimited users</li>
+        <li>40+ integrations</li>
+        <li>Unlimited queries</li>
+        <li>Autonomous agents</li>
+        <li>Priority support</li>
+      </ul>
+      <button class="p-btn p-btn-white">Start free trial</button>
+    </div>
+    <div class="p-card fade-up">
+      <div class="p-plan">Enterprise</div>
+      <div class="p-price">Custom</div>
+      <div class="p-period">talk to sales</div>
+      <ul class="p-features">
+        <li>Custom models</li>
+        <li>SSO / SAML</li>
+        <li>SLA guarantee</li>
+        <li>Dedicated support</li>
+      </ul>
+      <button class="p-btn p-btn-outline">Contact sales</button>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section fade-up">
+  <h2 class="cta-title">Ready to think<br><em>faster?</em></h2>
+  <p class="cta-desc">Join thousands of teams that have already replaced endless searching with instant answers.</p>
+  <div class="input-row">
+    <input class="email-input" type="email" placeholder="Enter your work email">
+    <button class="btn-dark" style="padding: 14px 24px; border-radius: 12px; font-size: 15px; white-space: nowrap;">Get started →</button>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">
+    <div class="nav-dot"></div>
+    Nexus
+  </div>
+  <div class="footer-copy">© 2026 Nexus AI Inc. All rights reserved.</div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

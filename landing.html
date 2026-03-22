@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AURA — Sound Redefined</title>
+<link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --black: #000000;
+    --white: #ffffff;
+    --gray: #6e6e73;
+    --light: #f5f5f7;
+    --accent: #0071e3;
+    --gold: #d4a843;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--black);
+    color: var(--white);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 0 24px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(0,0,0,0.72);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    letter-spacing: 4px;
+    color: var(--white);
+    text-transform: uppercase;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--white); }
+
+  .nav-cta {
+    background: var(--white);
+    color: var(--black);
+    border: none;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 100px 24px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(0,113,227,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.2s;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(52px, 10vw, 96px);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    margin-bottom: 8px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.4s;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .hero-subtitle {
+    font-size: clamp(18px, 3vw, 28px);
+    font-weight: 300;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 48px;
+    letter-spacing: -0.3px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.6s;
+  }
+
+  .hero-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.8s;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--white);
+    border: none;
+    padding: 16px 36px;
+    border-radius: 30px;
+    font-size: 17px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: -0.2px;
+  }
+
+  .btn-primary:hover {
+    background: #0077ed;
+    transform: scale(1.02);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--accent);
+    border: 1.5px solid rgba(0,113,227,0.4);
+    padding: 16px 36px;
+    border-radius: 30px;
+    font-size: 17px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--accent);
+    background: rgba(0,113,227,0.08);
+  }
+
+  /* PRODUCT VISUAL */
+  .product-visual {
+    margin-top: 80px;
+    position: relative;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 1s;
+  }
+
+  .headphone-svg {
+    width: clamp(280px, 50vw, 480px);
+    filter: drop-shadow(0 40px 80px rgba(0,113,227,0.3));
+  }
+
+  .glow-ring {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120%;
+    height: 120%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,113,227,0.12) 0%, transparent 70%);
+    pointer-events: none;
+    animation: pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    50% { transform: translate(-50%, -50%) scale(1.05); opacity: 0.7; }
+  }
+
+  /* STATS */
+  .stats {
+    padding: 80px 24px;
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    flex-wrap: wrap;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    font-weight: 700;
+    letter-spacing: -2px;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .stat-label {
+    font-size: 13px;
+    color: var(--gray);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* FEATURES */
+  .features {
+    padding: 120px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-tag {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 700;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+    margin-bottom: 80px;
+    max-width: 600px;
+  }
+
+  .section-title em {
+    font-style: italic;
+    color: rgba(255,255,255,0.4);
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2px;
+  }
+
+  .feature-card {
+    background: #111;
+    padding: 48px 40px;
+    transition: background 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+  }
+
+  .feature-card:hover { background: #161616; }
+
+  .feature-icon {
+    font-size: 36px;
+    margin-bottom: 24px;
+    display: block;
+  }
+
+  .feature-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 12px;
+  }
+
+  .feature-desc {
+    font-size: 15px;
+    color: var(--gray);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* HIGHLIGHT SECTION */
+  .highlight {
+    padding: 120px 24px;
+    background: var(--light);
+    color: var(--black);
+    text-align: center;
+  }
+
+  .highlight .section-tag { color: var(--accent); }
+
+  .highlight .section-title {
+    color: var(--black);
+    margin: 0 auto 24px;
+  }
+
+  .highlight .section-title em { color: rgba(0,0,0,0.3); }
+
+  .highlight-desc {
+    font-size: 19px;
+    color: #6e6e73;
+    max-width: 600px;
+    margin: 0 auto 48px;
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  .highlight .btn-primary { margin: 0 auto; display: inline-block; }
+
+  /* COLORS SECTION */
+  .colors-section {
+    padding: 120px 24px;
+    text-align: center;
+  }
+
+  .colors-grid {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 60px;
+  }
+
+  .color-chip {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+  }
+
+  .color-chip:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  }
+
+  .color-chip.midnight { background: #1c1c1e; border: 2px solid rgba(255,255,255,0.1); }
+  .color-chip.silver { background: linear-gradient(135deg, #c8c8ca, #f5f5f7); }
+  .color-chip.gold { background: linear-gradient(135deg, #c8a96e, #e8d5a3); }
+  .color-chip.sky { background: linear-gradient(135deg, #4fa3e0, #7ec8f0); }
+  .color-chip.rose { background: linear-gradient(135deg, #d4748c, #f0a0b8); }
+
+  .color-name {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--gray);
+    letter-spacing: 0.5px;
+  }
+
+  /* PRICE SECTION */
+  .price-section {
+    padding: 120px 24px;
+    background: #0a0a0a;
+    text-align: center;
+  }
+
+  .price-cards {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 60px;
+  }
+
+  .price-card {
+    background: #111;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 24px;
+    padding: 48px 40px;
+    width: 320px;
+    text-align: left;
+    transition: border-color 0.3s, transform 0.3s;
+    position: relative;
+  }
+
+  .price-card:hover {
+    border-color: rgba(255,255,255,0.2);
+    transform: translateY(-4px);
+  }
+
+  .price-card.featured {
+    border-color: var(--accent);
+    background: linear-gradient(135deg, #0a1628, #111);
+  }
+
+  .price-card.featured::before {
+    content: 'Most Popular';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 16px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+  }
+
+  .price-label {
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 16px;
+  }
+
+  .price-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .price-amount {
+    font-size: 48px;
+    font-weight: 300;
+    letter-spacing: -2px;
+    margin-bottom: 32px;
+  }
+
+  .price-amount span {
+    font-size: 20px;
+    vertical-align: top;
+    margin-top: 12px;
+    display: inline-block;
+    font-weight: 400;
+  }
+
+  .price-features {
+    list-style: none;
+    margin-bottom: 40px;
+  }
+
+  .price-features li {
+    font-size: 15px;
+    color: rgba(255,255,255,0.7);
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 300;
+  }
+
+  .price-features li::before {
+    content: '✓';
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .btn-buy {
+    width: 100%;
+    padding: 16px;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+  }
+
+  .btn-buy-primary {
+    background: var(--accent);
+    color: white;
+  }
+
+  .btn-buy-primary:hover { background: #0077ed; }
+
+  .btn-buy-secondary {
+    background: transparent;
+    color: var(--white);
+    border: 1.5px solid rgba(255,255,255,0.2) !important;
+  }
+
+  .btn-buy-secondary:hover { border-color: rgba(255,255,255,0.4) !important; }
+
+  /* FOOTER */
+  footer {
+    padding: 48px 24px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: gap;
+    gap: 24px;
+  }
+
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+
+  .footer-copy {
+    font-size: 13px;
+    color: var(--gray);
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-up {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .stats { gap: 40px; }
+    .features-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Aura</div>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#pricing">Buy</a></li>
+  </ul>
+  <button class="nav-cta">Order Now</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <span class="hero-tag">Introducing Aura Pro</span>
+  <h1 class="hero-title">Sound <em>beyond</em><br>imagination.</h1>
+  <p class="hero-subtitle">Adaptive noise cancellation. 40-hour battery.<br>Spatial audio that moves with you.</p>
+  <div class="hero-buttons">
+    <button class="btn-primary">Buy — from $349</button>
+    <button class="btn-secondary">Learn more ↓</button>
+  </div>
+  <div class="product-visual">
+    <div class="glow-ring"></div>
+    <svg class="headphone-svg" viewBox="0 0 400 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Headband -->
+      <path d="M80 180 Q80 60 200 60 Q320 60 320 180" stroke="white" stroke-width="12" fill="none" stroke-linecap="round"/>
+      <!-- Left cup outer -->
+      <ellipse cx="72" cy="210" rx="44" ry="56" fill="#1a1a1a" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+      <!-- Left cup inner -->
+      <ellipse cx="72" cy="210" rx="30" ry="40" fill="#111" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+      <!-- Left mesh -->
+      <ellipse cx="72" cy="210" rx="20" ry="28" fill="#0a0a0a"/>
+      <circle cx="72" cy="210" r="6" fill="#0071e3" opacity="0.6"/>
+      <!-- Right cup outer -->
+      <ellipse cx="328" cy="210" rx="44" ry="56" fill="#1a1a1a" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+      <!-- Right cup inner -->
+      <ellipse cx="328" cy="210" rx="30" ry="40" fill="#111" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+      <!-- Right mesh -->
+      <ellipse cx="328" cy="210" rx="20" ry="28" fill="#0a0a0a"/>
+      <circle cx="328" cy="210" r="6" fill="#0071e3" opacity="0.6"/>
+      <!-- Left arm -->
+      <rect x="60" y="168" width="22" height="24" rx="4" fill="#222"/>
+      <!-- Right arm -->
+      <rect x="318" y="168" width="22" height="24" rx="4" fill="#222"/>
+      <!-- Headband padding -->
+      <path d="M100 92 Q200 72 300 92" stroke="rgba(255,255,255,0.06)" stroke-width="14" fill="none" stroke-linecap="round"/>
+      <!-- Highlight on left cup -->
+      <ellipse cx="58" cy="192" rx="10" ry="16" fill="rgba(255,255,255,0.04)" transform="rotate(-15 58 192)"/>
+      <!-- Highlight on right cup -->
+      <ellipse cx="314" cy="192" rx="10" ry="16" fill="rgba(255,255,255,0.04)" transform="rotate(15 314 192)"/>
+      <!-- Logo text on right cup -->
+      <text x="328" y="215" text-anchor="middle" font-family="serif" font-size="11" fill="rgba(255,255,255,0.3)" letter-spacing="1">A</text>
+    </svg>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats fade-up">
+  <div class="stat">
+    <div class="stat-num">40h</div>
+    <div class="stat-label">Battery Life</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">-42</div>
+    <div class="stat-label">dB Noise Cancel</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">360°</div>
+    <div class="stat-label">Spatial Audio</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">5min</div>
+    <div class="stat-label">= 3h Playback</div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <span class="section-tag fade-up">Why Aura</span>
+  <h2 class="section-title fade-up">Everything you hear,<br><em>perfected.</em></h2>
+  <div class="features-grid">
+    <div class="feature-card fade-up">
+      <span class="feature-icon">🔇</span>
+      <h3 class="feature-title">Adaptive Noise Cancellation</h3>
+      <p class="feature-desc">Six microphones continuously analyze your environment and adapt in real time — from busy streets to quiet offices.</p>
+    </div>
+    <div class="feature-card fade-up">
+      <span class="feature-icon">🎵</span>
+      <h3 class="feature-title">Spatial Audio</h3>
+      <p class="feature-desc">Dynamic head tracking places sound all around you. Close your eyes and you're there — in the studio, at the concert.</p>
+    </div>
+    <div class="feature-card fade-up">
+      <span class="feature-icon">⚡</span>
+      <h3 class="feature-title">Lightning Fast Charge</h3>
+      <p class="feature-desc">5 minutes of charging gives you 3 hours of playback. Full charge in under 2 hours. Never miss a beat.</p>
+    </div>
+    <div class="feature-card fade-up">
+      <span class="feature-icon">🎙️</span>
+      <h3 class="feature-title">Studio-Grade Mic Array</h3>
+      <p class="feature-desc">Beamforming microphones isolate your voice from background noise. Crystal-clear calls every time.</p>
+    </div>
+    <div class="feature-card fade-up">
+      <span class="feature-icon">📱</span>
+      <h3 class="feature-title">Seamless Switching</h3>
+      <p class="feature-desc">Automatically switches between your iPhone, iPad, and Mac. Connects in under a second.</p>
+    </div>
+    <div class="feature-card fade-up">
+      <span class="feature-icon">🏗️</span>
+      <h3 class="feature-title">Precision Crafted</h3>
+      <p class="feature-desc">Anodized aluminum and memory foam ear cushions. Built to last, designed to comfort — for hours of listening.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HIGHLIGHT -->
+<section class="highlight fade-up">
+  <span class="section-tag">Sound Science</span>
+  <h2 class="section-title">The driver that<br><em>rewrites the rules.</em></h2>
+  <p class="highlight-desc">Custom-engineered 40mm drivers with neodymium magnets deliver bass depth, midrange clarity, and high-frequency detail that rivals studio monitors — in your ears.</p>
+  <button class="btn-primary">Explore the technology</button>
+</section>
+
+<!-- COLORS -->
+<section class="colors-section fade-up" id="colors">
+  <span class="section-tag">Finish</span>
+  <h2 class="section-title" style="margin: 0 auto 16px; text-align:center;">Five colors.<br><em>One obsession.</em></h2>
+  <div class="colors-grid">
+    <div>
+      <div class="color-chip midnight"></div>
+      <div class="color-name">Midnight</div>
+    </div>
+    <div>
+      <div class="color-chip silver"></div>
+      <div class="color-name">Silver</div>
+    </div>
+    <div>
+      <div class="color-chip gold"></div>
+      <div class="color-name">Starlight</div>
+    </div>
+    <div>
+      <div class="color-chip sky"></div>
+      <div class="color-name">Sky Blue</div>
+    </div>
+    <div>
+      <div class="color-chip rose"></div>
+      <div class="color-name">Rose</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="price-section fade-up" id="pricing">
+  <span class="section-tag">Choose yours</span>
+  <h2 class="section-title" style="margin: 0 auto 16px; text-align:center;">Pick your<br><em>Aura.</em></h2>
+  <div class="price-cards">
+    <div class="price-card fade-up">
+      <div class="price-label">Standard</div>
+      <div class="price-name">Aura</div>
+      <div class="price-amount"><span>$</span>249</div>
+      <ul class="price-features">
+        <li>30h battery life</li>
+        <li>Active noise cancellation</li>
+        <li>Bluetooth 5.3</li>
+        <li>USB-C charging</li>
+        <li>2 colorways</li>
+      </ul>
+      <button class="btn-buy btn-buy-secondary">Buy Aura</button>
+    </div>
+    <div class="price-card featured fade-up">
+      <div class="price-label">Premium</div>
+      <div class="price-name">Aura Pro</div>
+      <div class="price-amount"><span>$</span>349</div>
+      <ul class="price-features">
+        <li>40h battery life</li>
+        <li>Adaptive noise cancellation</li>
+        <li>Spatial Audio + head tracking</li>
+        <li>5-min fast charge</li>
+        <li>All 5 colorways</li>
+      </ul>
+      <button class="btn-buy btn-buy-primary">Buy Aura Pro</button>
+    </div>
+    <div class="price-card fade-up">
+      <div class="price-label">Elite</div>
+      <div class="price-name">Aura Max</div>
+      <div class="price-amount"><span>$</span>549</div>
+      <ul class="price-features">
+        <li>50h battery life</li>
+        <li>Pro-grade noise cancellation</li>
+        <li>Lossless audio via cable</li>
+        <li>Aluminum + leather build</li>
+        <li>Exclusive colorways</li>
+      </ul>
+      <button class="btn-buy btn-buy-secondary">Buy Aura Max</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Aura</div>
+  <div class="footer-copy">© 2026 Aura Audio. All rights reserved.</div>
+</footer>
+
+<script>
+  // Intersection Observer for fade-up animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
